@@ -1,6 +1,14 @@
 #!/usr/bin/env ruby
 
+require 'rubygems'
+require 'nokogiri'
+require 'open-uri'
 require 'net/http'
 
-uri = URI('http://tyda.se/search/f%C3%A5')
-Net::HTTP.get_print(uri)
+verb = ARGV.first
+
+uri = URI('http://tyda.se/search/'+verb)
+html = Net::HTTP.get(uri)
+
+puts html
+puts uri
