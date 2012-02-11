@@ -10,5 +10,12 @@ verb = ARGV.first
 uri = URI('http://tyda.se/search/'+verb)
 html = Net::HTTP.get(uri)
 
-puts html
-puts uri
+doc = Nokogiri::HTML(html) do |config|
+  config.strict.noent
+end
+
+forms = doc.css('.tyda_entry_word span')
+
+
+
+p forms.to_s
