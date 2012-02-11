@@ -16,6 +16,13 @@ end
 
 forms = doc.css('.tyda_entry_word span')
 
+#verbs = {
+#  :grundform =>,
+#  :presens =>,
+#  :imperfekt =>,
+#  :perfekt =>,
+#  :imperativ =>,
+#}
 
-
+#pp verbs
 p forms.to_s
