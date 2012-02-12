@@ -5,9 +5,12 @@ require 'nokogiri'
 require 'open-uri'
 require 'net/http'
 
-verb = ARGV.first
+searched_verb = ARGV.first
 
-uri = URI('http://tyda.se/search/'+verb)
+verb = Hash.new
+verb[:searched] = searched_verb
+
+uri = URI('http://tyda.se/search/'+searched_verb)
 html = Net::HTTP.get(uri)
 
 doc = Nokogiri::HTML(html) do |config|
@@ -16,13 +19,18 @@ end
 
 forms = doc.css('.tyda_entry_word span')
 
-#verbs = {
-#  :grundform =>,
-#  :presens =>,
-#  :imperfekt =>,
-#  :perfekt =>,
-#  :imperativ =>,
-#}
+forms = forms.each do |v|
+  if v['title'] == "grundform"
+    verb[:grundform] = v.children.text
+  elsif v['title'] == "tempus: presens"
+    verb[:presens] = v.children.text
+  elsif v['title'] == "tempus: imperfekt"
+    verb[:imperfekt] = v.children.text
+  elsif v['title'] == "tempus: perfekt/pluskvamperfekt (har/hade)"
+    verb[:prefekt] = v.children.text
+  elsif v['title'] == "tempus: imperativ"
+    verb[:imperativ] = v.children.text
+  end
+end
 
-#pp verbs
-p forms.to_s
+puts verb
