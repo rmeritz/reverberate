@@ -33,6 +33,13 @@ forms = forms.each do |v|
   end
 end
 
+puts "You searched for the verb: #{verb[:searched].capitalize}."
+puts "Grundform/Infinitive: #{verb[:grundform]}"
+puts "Presens/Present:      #{verb[:presens]}"
+puts "Preteritum/Past:      #{verb[:preteritum]}"
+puts "Prefekt/Prefect:      #{verb[:prefekt]}"
+puts "Imperativ/Imperative: #{verb[:imperativ]}"
+
 def base(verb_hash)
   verb_hash[:imperativ].chomp("!")
 end
@@ -71,7 +78,7 @@ end
 def grupp4?(verb_hash)
   (base(verb_hash)+"a" == verb_hash[:grundform]) &&
     (base(verb_hash)+"er" == verb_hash[:presens]) &&
-    (verb_hash[:grundform]+"it"  == verb_hash[:prefekt])
+    (base(verb_hash)+"it"  == verb_hash[:prefekt])
 end
 
 if grupp1?(verb)
@@ -90,10 +97,4 @@ else
   verb[:grupp] = "5 - Orgelbunda Verb"
 end
 
-puts "You searched for the verb: #{verb[:searched].capitalize}."
-puts "Grundform/Infinitive: #{verb[:grundform]}"
-puts "Presens/Present:      #{verb[:presens]}"
-puts "Preteritum/Past:      #{verb[:preteritum]}"
-puts "Prefekt/Prefect:      #{verb[:prefekt]}"
-puts "Imperativ/Imperative: #{verb[:imperativ]}"
 puts "Verb Grupp #{verb[:grupp]}"
