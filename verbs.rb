@@ -34,10 +34,10 @@ forms = forms.each do |v|
 end
 
 def grupp1?(verb_hash)
-  (verb_hash[:grundform] =~ /a$/) &
-    (verb_hash[:grundform]+"r"  == verb_hash[:presens]) &
-    (verb_hash[:grundform]+"de" == verb_hash[:preteritum]) &
-    (verb_hash[:grundform]+"t"  == verb_hash[:prefekt]) &
+  (verb_hash[:grundform] =~ /a$/) &&
+    (verb_hash[:grundform]+"r"  == verb_hash[:presens]) &&
+    (verb_hash[:grundform]+"de" == verb_hash[:preteritum]) &&
+    (verb_hash[:grundform]+"t"  == verb_hash[:prefekt]) &&
     (if verb_hash[:imperativ] != "---"
        verb_hash[:grundform]+"!" == verb_hash[:imperativ]
      end)
