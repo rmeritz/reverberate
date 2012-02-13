@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 
 require 'rubygems'
 require 'nokogiri'
-require 'open-uri'
 require 'net/http'
 
 searched_verb = ARGV.first
@@ -25,7 +25,7 @@ forms = forms.each do |v|
   elsif v['title'] == "tempus: presens"
     verb[:presens] = v.children.text
   elsif v['title'] == "tempus: imperfekt"
-    verb[:imperfekt] = v.children.text
+    verb[:preteritum] = v.children.text
   elsif v['title'] == "tempus: perfekt/pluskvamperfekt (har/hade)"
     verb[:prefekt] = v.children.text
   elsif v['title'] == "tempus: imperativ"
@@ -33,9 +33,34 @@ forms = forms.each do |v|
   end
 end
 
+def grupp1?(verb_hash)
+  (verb_hash[:grundform] =~ /a$/) &
+    (verb_hash[:grundform]+"r"  == verb_hash[:presens]) &
+    (verb_hash[:grundform]+"de" == verb_hash[:preteritum]) &
+    (verb_hash[:grundform]+"t"  == verb_hash[:prefekt]) &
+    (if verb_hash[:imperativ] != "---"
+       verb_hash[:grundform]+"!" == verb_hash[:imperativ]
+     end)
+end
+
+if grupp1?(verb)
+  verb[:grupp] = "1 - Verb som sluttar på -a"
+elsif grupp2a?(verb)
+  verb[:grupp] = "2a - Verb som slutar på en konsonant ljud"
+elsif grupp2b?(verb)
+  verb[:grupp] = "2b - Verb som slutar på en tonlösa konsonant"
+elsif grupp3?(verb)
+  verb[:grupp] = "3 - Verb som slutar på en vokal annan än -a"
+elsif grupp4?(verb)
+  verb[:grupp] = "4 - Verb som slutar på en vokal annan än -a"
+else
+  verb[:grupp] = "5 - Orgelbunda Verb"
+end
+
 puts "You searched for the verb: #{verb[:searched].capitalize}."
 puts "Grundform/Infinitive: #{verb[:grundform]}"
 puts "Presens/Present:      #{verb[:presens]}"
-puts "Imperfekt/Imperfect:  #{verb[:imperfekt]}"
+puts "Preteritum/Past:      #{verb[:preteritum]}"
 puts "Prefekt/Prefect:      #{verb[:prefekt]}"
 puts "Imperativ/Imperative: #{verb[:imperativ]}"
+puts "Verb Grupp #{verb[:grupp]}"
