@@ -33,22 +33,55 @@ forms = forms.each do |v|
   end
 end
 
+def base(verb_hash)
+  verb_hash[:imperativ].chomp("!")
+end
+
 def grupp1?(verb_hash)
   (verb_hash[:grundform] =~ /a$/) &&
     (verb_hash[:grundform]+"r"  == verb_hash[:presens]) &&
     (verb_hash[:grundform]+"de" == verb_hash[:preteritum]) &&
     (verb_hash[:grundform]+"t"  == verb_hash[:prefekt]) &&
-    (if verb_hash[:imperativ] != "---"
-       verb_hash[:grundform]+"!" == verb_hash[:imperativ]
-     end)
+    (verb_hash[:grundform]+"!"  == verb_hash[:imperativ])
+end
+
+def grupp2?(verb_hash)
+  ((base(verb_hash)+"er" || base(verb_hash)+"r") == verb_hash[:presens]) &&
+    (base(verb_hash)+"a" == verb_hash[:grundform]) &&
+    (base(verb_hash)+"t" == verb_hash[:prefekt])
+end
+
+def grupp2b?(verb_hash)
+  (base(verb_hash) =~ /[cfpstk]$/) &&
+    (base(verb_hash)+"te" == verb_hash[:preteritum])
+end
+
+def grupp2a?(verb_hash)
+  (verb_hash[:imperativ].chomp("!")+"de" == verb_hash[:preteritum])
+end
+
+def grupp3?(verb_hash)
+  (base(verb_hash) =~ /[eiouäåö]$/) &&
+    (base(verb_hash) == verb_hash[:grundform]) &&
+    (base(verb_hash)+"r" == verb_hash[:presens]) &&
+    (base(verb_hash)+"dde" == verb_hash[:preteritum]) &&
+    (verb_hash[:grundform]+"tt"  == verb_hash[:prefekt])
+end
+
+def grupp4?(verb_hash)
+  (base(verb_hash)+"a" == verb_hash[:grundform]) &&
+    (base(verb_hash)+"er" == verb_hash[:presens]) &&
+    (verb_hash[:grundform]+"it"  == verb_hash[:prefekt])
 end
 
 if grupp1?(verb)
   verb[:grupp] = "1 - Verb som sluttar på -a"
-elsif grupp2a?(verb)
-  verb[:grupp] = "2a - Verb som slutar på en konsonant ljud"
-elsif grupp2b?(verb)
-  verb[:grupp] = "2b - Verb som slutar på en tonlösa konsonant"
+elsif grupp2?(verb)
+  if grupp2b?(verb)
+    verb[:grupp] = "2b - Verb som slutar på en tonlösa konsonant"
+  elsif grupp2a?(verb)
+    verb[:grupp] = "2a - Verb som slutar på en konsonant ljud"
+  end
 elsif grupp3?(verb)
   verb[:grupp] = "3 - Verb som slutar på en vokal annan än -a"
 elsif grupp4?(verb)
