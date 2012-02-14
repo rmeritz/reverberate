@@ -79,26 +79,21 @@ end
 def grupp4vowels(verb_hash)
   begin
     p = /([bcdfghjklmnpqrstvwxz]+)([aeiouäåöy])([bcdfghjklmnpqrstvwxz]+)/
-    p.match(base(verb_hash))
-    head = $1
-    first_vowel = $2
-    tail = $3
-    p.match((verb_hash[:grundform]).chomp!("a"))
-    head == $1
-    first_vowel == $2
-    tail == $3
-    p.match((verb_hash[:presens]).chomp!("er"))
-    head == $1
-    first_vowel == $2
-    tail == $3
-    p.match(verb_hash[:preteritum])
-    head == $1
-    second_vowel = $2
-    tail == $3
-    p.match((verb_hash[:prefekt]).chomp!("it"))
-    head == $1
-    third_vowel = $2
-    tail == $3
+    if p.match(base(verb_hash))
+      head = $1
+      first_vowel = $2
+      tail = $3
+      (base(verb_hash) == ((verb_hash[:presens]).chomp!("er"))) &&
+        ((base(verb_hash)) == ((verb_hash[:grundform]).chomp!("a"))) &&
+        if p.match(verb_hash[:preteritum]) &&
+            head == $1 && tail == $3
+        end
+      second_vowel = $2
+      if p.match((verb_hash[:prefekt]).chomp!("it")) &&
+          head == $1 && tail == $3
+      end
+      third_vowel = $2
+    end
     first_vowel + "-" + second_vowel + "-" + third_vowel
   rescue
     false
