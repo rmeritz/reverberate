@@ -77,7 +77,7 @@ def grupp3?(verb_hash)
 end
 
 def grupp4?(verb_hash)
-  p = /([bcdfghjklmnpqrstvwxz]+)[aeiouäåöy]([bcdfghjklmnpqrstvwxz]+)/
+  p = /([bcdfghjklmnpqrstvwxz]*)[aeiouäåöy]([bcdfghjklmnpqrstvwxz]*)/
   p.match(base(verb_hash))
   head = $1
   tail = $2
@@ -87,6 +87,17 @@ def grupp4?(verb_hash)
     head == $1 && tail == $2 &&
     p.match((verb_hash[:prefekt]).chomp!("it")) &&
     head == $1 && tail == $2
+end
+
+def grupp4vowel(verb_hash)
+  p = /[bcdfghjklmnpqrstvwxz]*([aeiouäåöy])[bcdfghjklmnpqrstvwxz]*/
+  p.match(base(verb_hash))
+  first_vowel = $1
+  p.match(verb_hash[:preteritum])
+  second_vowel = $1
+  p.match((verb_hash[:prefekt]).chomp!("it"))
+  third_vowel = $1
+  first_vowel + "-" + second_vowel + "-" + third_vowel
 end
 
 def grupp(verb_hash)
@@ -102,6 +113,7 @@ def grupp(verb_hash)
     "3 - Verb som slutar på en vokal annan än -a"
   elsif grupp4?(verb_hash)
     "4 - I de starka verben ändra vokalen i stammen "
+    + grupp4vowel(verb_hash)
   else
     "5 - Orgelbunda Verb"
   end
