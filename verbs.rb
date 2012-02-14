@@ -75,10 +75,33 @@ def grupp3?(verb_hash)
     (verb_hash[:grundform]+"tt"  == verb_hash[:prefekt])
 end
 
-def grupp4?(verb_hash)
-  (base(verb_hash)+"a" == verb_hash[:grundform]) &&
-    (base(verb_hash)+"er" == verb_hash[:presens]) &&
-    (base(verb_hash)+"it"  == verb_hash[:prefekt])
+def grupp4vowels(verb_hash)
+  begin
+    p = /([bcdfghjklmnpqrstvwxyz]+)([aeiouäåö])([bcdfghjklmnpqrstvwxyz]+)/
+    p.match(base(verb_hash))
+    head = $1
+    first_vowel = $2
+    tail = $3
+    p.match((verb_hash[:grundform]).chomp!("a"))
+    head == $1
+    first_vowel == $2
+    tail == $3
+    p.match((verb_hash[:presens]).chomp!("er"))
+    head == $1
+    first_vowel == $2
+    tail == $3
+    p.match(verb_hash[:preteritum])
+    head == $1
+    second_vowel = $2
+    tail == $3
+    p.match((verb_hash[:prefekt]).chomp("it"))
+    head == $1
+    third_vowel = $2
+    tail == $3
+    first_vowel+"-"+second_vowel+"-"third_vowel
+  rescue
+    false
+  end
 end
 
 if grupp1?(verb)
@@ -91,8 +114,8 @@ elsif grupp2?(verb)
   end
 elsif grupp3?(verb)
   verb[:grupp] = "3 - Verb som slutar på en vokal annan än -a"
-elsif grupp4?(verb)
-  verb[:grupp] = "4 - Verb som slutar på en vokal annan än -a"
+elsif vowels = grupp4vowels(verb)
+  verb[:grupp] = "4 - Verb som slutar på en vokal annan än -a " + vowels
 else
   verb[:grupp] = "5 - Orgelbunda Verb"
 end
