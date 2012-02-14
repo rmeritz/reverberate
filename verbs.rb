@@ -78,17 +78,15 @@ end
 
 def grupp4?(verb_hash)
   p = /([bcdfghjklmnpqrstvwxz]+)[aeiouäåöy]([bcdfghjklmnpqrstvwxz]+)/
-  if p.match(base(verb_hash)) &&
-      head = $1 && tail = $2 &&
-      (base(verb_hash) == ((verb_hash[:presens]).chomp!("er"))) &&
-      ((base(verb_hash)) == ((verb_hash[:grundform]).chomp!("a"))) &&
-      (if p.match(verb_hash[:preteritum])
-         head == $1 && tail == $2
-       end) &&
-        (if p.match((verb_hash[:prefekt]).chomp!("it")) &&
-             head == $1 && tail == $3
-         end)
-  end
+  p.match(base(verb_hash))
+  head = $1
+  tail = $2
+  (base(verb_hash) == ((verb_hash[:presens]).chomp!("er"))) &&
+    ((base(verb_hash)) == ((verb_hash[:grundform]).chomp!("a"))) &&
+    p.match(verb_hash[:preteritum]) &&
+    head == $1 && tail == $2 &&
+    p.match((verb_hash[:prefekt]).chomp!("it")) &&
+    head == $1 && tail == $2
 end
 
 def grupp(verb_hash)
