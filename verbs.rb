@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
+$KCODE = "UTF-8"
 
 require 'rubygems'
 require 'nokogiri'
@@ -77,7 +78,7 @@ end
 
 def grupp4vowels(verb_hash)
   begin
-    p = /([bcdfghjklmnpqrstvwxyz]+)([aeiouäåö])([bcdfghjklmnpqrstvwxyz]+)/
+    p = /([bcdfghjklmnpqrstvwxz]+)([aeiouäåöy])([bcdfghjklmnpqrstvwxz]+)/
     p.match(base(verb_hash))
     head = $1
     first_vowel = $2
@@ -94,30 +95,34 @@ def grupp4vowels(verb_hash)
     head == $1
     second_vowel = $2
     tail == $3
-    p.match((verb_hash[:prefekt]).chomp("it"))
+    p.match((verb_hash[:prefekt]).chomp!("it"))
     head == $1
     third_vowel = $2
     tail == $3
-    first_vowel+"-"+second_vowel+"-"third_vowel
+    first_vowel + "-" + second_vowel + "-" + third_vowel
   rescue
     false
   end
 end
 
-if grupp1?(verb)
-  verb[:grupp] = "1 - Verb som sluttar på -a"
-elsif grupp2?(verb)
-  if grupp2b?(verb)
-    verb[:grupp] = "2b - Verb som slutar på en tonlösa konsonant"
-  elsif grupp2a?(verb)
-    verb[:grupp] = "2a - Verb som slutar på en konsonant ljud"
+def grupp(verb_hash)
+  if grupp1?(verb_hash)
+    "1 - Verb som sluttar på -a"
+  elsif grupp2?(verb_hash)
+    if grupp2b?(verb_hash)
+      "2b - Verb som slutar på en tonlösa konsonant"
+    elsif grupp2a?(verb_hash)
+      "2a - Verb som slutar på en konsonant ljud"
+    end
+  elsif grupp3?(verb_hash)
+    "3 - Verb som slutar på en vokal annan än -a"
+  elsif vowels = grupp4vowels(verb_hash)
+    "4 - I de starka verben ändra vokalen i stammen " + vowels
+  else
+    "5 - Orgelbunda Verb"
   end
-elsif grupp3?(verb)
-  verb[:grupp] = "3 - Verb som slutar på en vokal annan än -a"
-elsif vowels = grupp4vowels(verb)
-  verb[:grupp] = "4 - Verb som slutar på en vokal annan än -a " + vowels
-else
-  verb[:grupp] = "5 - Orgelbunda Verb"
 end
+
+verb[:grupp] = grupp(verb)
 
 puts "Verb Grupp #{verb[:grupp]}"
