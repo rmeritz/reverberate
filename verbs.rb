@@ -10,7 +10,7 @@ searched_verb = ARGV.first
 verb = Hash.new("---")
 verb[:searched] = searched_verb
 
-uri = URI('http://tyda.se/search/'+searched_verb)
+uri = URI(URI.escape('http://tyda.se/search/'+searched_verb))
 html = Net::HTTP.get(uri)
 
 doc = Nokogiri::HTML(html) do |config|
