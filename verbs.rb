@@ -61,11 +61,13 @@ end
 
 def grupp2b?(verb_hash)
   (base(verb_hash) =~ /[cfpstk]$/) &&
-    (base(verb_hash)+"te" == verb_hash[:preteritum])
+    (base(verb_hash)+"te" == verb_hash[:preteritum]) &&
+    grupp2?(verb_hash)
 end
 
 def grupp2a?(verb_hash)
   (verb_hash[:imperativ].chomp("!")+"de" == verb_hash[:preteritum])
+  grupp2?(verb_hash)
 end
 
 def grupp3?(verb_hash)
@@ -106,16 +108,15 @@ end
 def grupp(verb_hash)
   if grupp1?(verb_hash)
     "1 - Verb som sluttar på -a"
-  elsif grupp2?(verb_hash)
-    if grupp2b?(verb_hash)
-      "2b - Verb som slutar på en tonlösa konsonant"
-    elsif grupp2a?(verb_hash)
-      "2a - Verb som slutar på en konsonant ljud"
-    end
+  elsif grupp2b?(verb_hash)
+    "2b - Verb som slutar på en tonlösa konsonant"
+  elsif grupp2a?(verb_hash)
+    "2a - Verb som slutar på en konsonant ljud"
   elsif grupp3?(verb_hash)
     "3 - Verb som slutar på en vokal annan än -a"
   elsif grupp4?(verb_hash)
-    "4 - I de starka verben ändra vokalen i stammen " + grupp4vowel(verb_hash)
+    "4 - I de starka verben ändra vokalen i stammen " +
+      grupp4vowel(verb_hash)
   else
     "5 - Orgelbunda Verb"
   end
